@@ -4,9 +4,7 @@ const ProductManager = require("./ProductManager"); // Actualiza la ruta si Prod
 
 const manager = new ProductManager("productos.json");
 
-app.listen(8000, () => {
-  console.log("Servidor ejecutándose en el puerto", 8000);
-});
+
 
 // Endpoint para obtener todos los productos con el parámetro de consulta opcional "limit"
 app.get("/products", async (req, res) => {
@@ -28,4 +26,8 @@ app.get("/products/:pid", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.listen(8000, () => {
+  console.log("Servidor ejecutándose en el puerto", 8000);
 });
