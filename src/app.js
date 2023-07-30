@@ -28,6 +28,6 @@ app.get("/products/:pid", async (req, res) => {
   }
 });
 
-app.listen(8000, () => {
-  console.log("Servidor ejecutándose en el puerto", 8000);
+app.listen(8080, () => {
+  console.log("Servidor ejecutándose en el puerto", 8080);
 });
