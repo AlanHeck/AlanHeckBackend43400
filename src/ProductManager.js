@@ -1,124 +1,99 @@
-const fs = require("fs");
+import fs from "fs";
+import __dirname from "./utils.js";
 
-class ProductManager {
-  constructor(path) {
-    this.path = path;
+export default class ProductManager {
+  constructor() {
+    this.path = `${__dirname}/files/Products.json`;
   }
 
-  async getProducts(limit) {
+  getProducts = async () => {
     try {
       if (fs.existsSync(this.path)) {
-        const infoProducts = await fs.promises.readFile(this.path, "utf-8");
-        const allProducts = JSON.parse(infoProducts);
-
-        if (limit && Number.isInteger(limit) && limit > 0) {
-          return allProducts.slice(0, limit);
-        } else {
-          return allProducts;
-        }
+        const productsString = await fs.promises.readFile(this.path, "utf-8");
+        const products = JSON.parse(productsString);
+        return products;
       } else {
         return [];
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
-  }
+  };
 
-  async addProduct(objProduct) {
+  addProduct = async (product) => {
     try {
-      const productsPrev = await this.getProducts();
+      const products = await this.getProducts();
 
-      // Validar que todas las propiedades necesarias estén presentes
-      if (
-        !objProduct.title ||
-        !objProduct.description ||
-        !objProduct.price ||
-        !objProduct.thumbnail ||
-        !objProduct.code ||
-        !objProduct.stock
-      ) {
-        throw new Error("Faltan propiedades del producto");
-      }
+      product.id =
+        products.length === 0 ? 1 : products[products.length - 1].id + 1;
 
-      // Validar que el código (code) no se repita en otros productos
-      if (productsPrev.some((p) => p.code === objProduct.code)) {
-        throw new Error("El código del producto ya existe");
-      }
+      products.push(product);
 
-      let id;
-      if (!productsPrev.length) {
-        id = 1;
-      } else {
-        id = productsPrev[productsPrev.length - 1].id + 1;
-      }
-
-      const newProduct = { ...objProduct, id };
-      productsPrev.push(newProduct);
-
-      await fs.promises.writeFile(this.path, JSON.stringify(productsPrev));
-      return newProduct;
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(products, null, "\t")
+      );
+      return product;
     } catch (error) {
-      throw error;
+      console.log(error);
     }
-  }
+  };
 
-  async getProductById(id) {
+  getProductById = async (id) => {
     try {
-      const productPrev = await this.getProducts();
-      const product = productPrev.find((p) => p.id === id);
-      if (!product) {
-        throw new Error("Producto con el id no encontrado");
-      } else {
-        return product;
-      }
+      const products = await this.getProducts();
+      const product = products.find((product) => product.id === id);
+      if (!product) throw new Error("Product was not found");
+      return product;
     } catch (error) {
-      throw error;
+      console.log(error);
     }
-  }
+  };
 
-  async updateProduct(id, obj) {
+  updateProduct = async (id, changes) => {
     try {
-      const productPrev = await this.getProducts();
-      const productoPorSuIndex = productPrev.findIndex((p) => p.id === id);
-      if (productoPorSuIndex === -1) {
-        throw new Error("No hay producto con ese id");
-      } else {
-        // Validar que el código (code) no se repita en otros productos
-        if (
-          obj.code &&
-          productPrev.some((p) => p.code === obj.code && p.id !== id)
-        ) {
-          throw new Error("El código del producto ya existe");
-        }
+      const products = await this.getProducts();
+      const product = await this.getProductById(id);
+      const productIndex = products.findIndex((product) => product.id === id);
 
-        const product = productPrev[productoPorSuIndex];
-        productPrev[productoPorSuIndex] = { ...product, ...obj };
-        await fs.promises.writeFile(this.path, JSON.stringify(productPrev));
-        return productPrev[productoPorSuIndex];
+      if (changes.id) {
+        throw new Error("Cannot modify id property");
       }
+
+      const updatedProduct = {
+        ...product,
+        ...changes,
+      };
+
+      products.splice(productIndex, 1, updatedProduct);
+
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(products, null, "\t")
+      );
+      return updatedProduct;
     } catch (error) {
-      throw error;
+      console.log(error);
     }
-  }
+  };
 
-  async deleteProduct(id) {
+  deleteProduct = async (id) => {
+    try {
+      const products = await this.getProducts();
+      const productIndex = products.findIndex((product) => product.id === id);
 
-    const productPrev = await this.getProducts();
-    if (!productPrev.some(product => product.id === id)) {
-      throw new Error(`el producto con el id ${id} no puede ser eliminado porque no existe`)
+      if (productIndex === -1)
+        throw new Error(`Error: Product with id ${id} does not exist.`);
+
+      products.splice(productIndex, 1);
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(products, null, "\t")
+      );
+
+      return true;
+    } catch (error) {
+      console.log(error);
     }
-    const nuevoArrayConProductoEliminado = productPrev.filter(
-      (p) => p.id !== id
-    );
-    await fs.promises.writeFile(
-      this.path,
-      JSON.stringify(nuevoArrayConProductoEliminado)
-    );
-
-
-  }
+  };
 }
-
-module.exports = ProductManager;
-
-

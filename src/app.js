@@ -1,33 +1,17 @@
-const express = require("express");
+import express from "express";
+import productsRouter from "./routes/product.router.js";
+import cartsRouter from "./routes/cart.router.js";
+import __dirname from "./utils.js";
+
 const app = express();
-const ProductManager = require("./ProductManager"); // Actualiza la ruta si ProductManager.js está en una carpeta diferente
 
-const manager = new ProductManager("productos.json");
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/", express.static(`${__dirname}/public`));
 
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 
-
-// Endpoint para obtener todos los productos con el parámetro de consulta opcional "limit"
-app.get("/products", async (req, res) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-    const products = await manager.getProducts(limit);
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Endpoint para obtener un producto específico por su ID
-app.get("/products/:pid", async (req, res) => {
-  try {
-    const productId = parseInt(req.params.pid);
-    const product = await manager.getProductById(productId);
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(8080, () => {
-  console.log("Servidor ejecutándose en el puerto", 8080);
+app.listen(8080, (req, res) => {
+  console.log("Listening on port 8080");
 });
