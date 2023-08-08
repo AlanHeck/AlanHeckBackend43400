@@ -1,10 +1,12 @@
-import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import multer from "multer";
 
+// __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// multer config
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, `${__dirname}/public/images`);

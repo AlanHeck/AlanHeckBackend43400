@@ -1,5 +1,6 @@
 import fs from "fs";
 import __dirname from "./utils.js";
+import socket from "./socket.js";
 
 export default class ProductManager {
   constructor() {
@@ -33,6 +34,8 @@ export default class ProductManager {
         this.path,
         JSON.stringify(products, null, "\t")
       );
+
+      socket.io.emit("product_added", product);
       return product;
     } catch (error) {
       console.log(error);
@@ -90,6 +93,8 @@ export default class ProductManager {
         this.path,
         JSON.stringify(products, null, "\t")
       );
+
+      socket.io.emit("product_deleted", productIndex);
 
       return true;
     } catch (error) {
