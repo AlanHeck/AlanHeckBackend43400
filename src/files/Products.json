@@ -1,74 +1,33 @@
 [
-    {
-        "title": "tomato",
-        "description": "500 gr",
-        "price": 5,
-        "thumbnail": "image1",
-        "code": "FJHGN",
-        "stock": 10,
-        "id": 1
-    },
-    {
-        "title": "Hola Mundo",
-        "description": "500 gr",
-        "price": 5,
-        "thumbnail": "image1",
-        "code": "FJHGN",
-        "stock": 35,
-        "id": 2
-    },
-    {
-        "title": "queso",
-        "description": "500 gr",
-        "price": 5,
-        "thumbnail": "image1",
-        "code": "FJHGN",
-        "stock": 10,
-        "id": 3
-    },
-    {
-        "title": "",
-        "description": "",
-        "code": "ASDGF",
-        "price": 5,
-        "status": true,
-        "stock": 5,
-        "category": "Food",
-        "id": 4
-    },
-    {
-        "title": "",
-        "description": "",
-        "code": "ASDGF",
-        "price": 5,
-        "status": true,
-        "stock": 5,
-        "category": "Food",
-        "id": 5
-    },
-    {
-        "title": "tomato",
-        "description": "100 gr",
-        "code": "ASDGF",
-        "price": 5,
-        "status": true,
-        "stock": 5,
-        "category": "Food",
-        "id": 7
-    },
-    {
-        "title": "tomato",
-        "description": "500 gr",
-        "code": "ASGHDG",
-        "price": "50",
-        "status": "true",
-        "stock": "5",
-        "category": "Food",
-        "thumbnails": [
-            "http://localhost:8080/images/1678423451425-bd9a9c6b74f7d51b35da4397a1a5cc79.gif",
-            "http://localhost:8080/images/1678423451437-8ea5d4080c8d1e153b07d35778fa51c3.jpg",
-            "http://localhost:8080/images/1678423451438-patrick-patrick-star.gif"
-        ],
-        "id": 14
-    }
+	{
+		"title": "queso",
+		"description": "500 gr",
+		"price": 5,
+		"thumbnail": "image1",
+		"code": "FJHGN",
+		"stock": 10,
+		"id": 3
+	},
+	{
+		"title": "tomato",
+		"description": "100 gr",
+		"code": "ASDGF",
+		"price": 5,
+		"status": true,
+		"stock": 5,
+		"category": "Food",
+		"id": 7
+	},
+	{
+		"title": "eqwewqe",
+		"description": "qweqe",
+		"price": "255",
+		"id": 15
+	},
+	{
+		"title": "tito",
+		"description": "merelo",
+		"price": "50",
+		"id": 17
+	}
 ]

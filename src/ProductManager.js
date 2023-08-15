@@ -94,7 +94,7 @@ export default class ProductManager {
         JSON.stringify(products, null, "\t")
       );
 
-      socket.io.emit("product_deleted", productIndex);
+      socket.io.emit("product_deleted", id);
 
       return true;
     } catch (error) {
