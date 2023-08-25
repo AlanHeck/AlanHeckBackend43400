@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManager from "../ProductManager.js";
+import ProductManager from "../dao/dbManagers/products.js";
 import { uploader } from "../utils.js";
 
 const router = Router();
@@ -21,14 +21,18 @@ router.get("/", async (req, res) => {
 
 router.get("/:pid", async (req, res) => {
   const productId = req.params.pid;
-  const product = await manager.getProductById(+productId);
+  const product = await manager.getProductById(productId);
 
   if (!product) {
     return res
       .status(404)
       .send({ status: "Error", error: "product was not found" });
   }
-  return res.send({ status: "OK", message: product });
+  return res.send({
+    status: "sucess",
+    message: "product found",
+    payload: product,
+  });
 });
 
 router.post("/", uploader.array("thumbnails", 5), async (req, res) => {
@@ -59,7 +63,7 @@ router.put("/:pid", async (req, res) => {
   const productId = req.params.pid;
   const changes = req.body;
 
-  const updatedProduct = await manager.updateProduct(+productId, changes);
+  const updatedProduct = await manager.updateProduct(productId, changes);
 
   if (!updatedProduct) {
     return res
@@ -69,13 +73,12 @@ router.put("/:pid", async (req, res) => {
   return res.send({
     status: "OK",
     message: "Product succesfully updated",
-    product: updatedProduct,
   });
 });
 
 router.delete("/:pid", async (req, res) => {
   const productId = req.params.pid;
-  const deletedProduct = await manager.deleteProduct(+productId);
+  const deletedProduct = await manager.deleteProduct(productId);
 
   if (!deletedProduct) {
     return res

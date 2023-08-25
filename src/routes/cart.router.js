@@ -1,5 +1,5 @@
 import { Router } from "express";
-import CartManager from "../CartManager.js";
+import CartManager from "../dao/dbManagers/carts.js";
 
 const manager = new CartManager();
 
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
   const cartId = req.params.cid;
-  const cart = await manager.getCartById(+cartId);
+  const cart = await manager.getCartById(cartId);
 
   if (!cart) {
     return res.status(404).send({
@@ -40,7 +40,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
   const { quantity } = req.body;
 
-  const newProduct = await manager.addProduct(+cartId, +productId, quantity);
+  const newProduct = await manager.addProduct(cartId, productId, quantity);
 
   if (!newProduct) {
     return res
