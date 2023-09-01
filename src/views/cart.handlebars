@@ -1,0 +1,9 @@
+<div>
+    <h1>Cart Items</h1>
+
+    {{#each products}}
+    <div>
+        <p>{{this.product.title}}: {{this.quantity}}</p>
+    </div>
+    {{/each}}
+</div>
