@@ -2,13 +2,14 @@ import { Router } from "express";
 import ProductManager from "../dao/dbManagers/products.js";
 import MessageManager from "../dao/dbManagers/messages.js";
 import CartManager from "../dao/dbManagers/carts.js";
+import { checkLogged, isProtected, checkSession } from "../middlewares/auth.js";
 
 const router = Router();
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 const messageManager = new MessageManager();
 
-router.get("/", async (req, res) => {
+router.get("/", isProtected, async (req, res) => {
     const options = {
         query: {},
         pagination: {
@@ -55,6 +56,7 @@ router.get("/", async (req, res) => {
         prevLink,
         nextLink,
         title: "Products",
+        user: req.session.user,
     });
 });
 
@@ -81,6 +83,18 @@ router.get("/realtimeproducts", async (req, res) => {
 router.get("/chat", async (req, res) => {
     const messages = await messageManager.getMessages();
     return res.render("messages");
+});
+
+router.get("/login", checkSession, (req, res) => {
+    res.render("login", { title: "Login" });
+});
+
+router.get("/register", checkLogged, (req, res) => {
+    res.render("register", { title: "Register" });
+});
+
+router.get("/", isProtected, (req, res) => {
+    res.render("profile", { user: req.session.user });
 });
 
 export default router;

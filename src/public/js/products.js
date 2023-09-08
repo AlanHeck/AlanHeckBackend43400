@@ -12,3 +12,16 @@ async function addToCart(productId) {
     let result = await response.json();
     console.log(result);
 }
+
+async function logout() {
+    let response = await fetch("/api/sessions/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const result = await response.json();
+
+    if (result.status === "sucess") window.location.href = "/login";
+}

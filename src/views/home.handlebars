@@ -1,9 +1,11 @@
 <div>
+    <h1>Welcome {{user.name}}</h1>
     <div class="row">
+        <button class="btn btn-primary" onclick="logout()">Logout</button>
         <div class="col-sm-6">
             {{#each products}}
             <div class="card" style="width: 18rem;">
-                <img src="{{this.thumbnails.[0]}}" class="card-img-top" alt="..." />
+                <img src="{{this.thumbnails.0}}" class="card-img-top" alt="..." />
                 <div class="card-body">
                     <a href="/product/{{this._id}}">
                         <h5 class="card-title">{{this.title}}</h5>
