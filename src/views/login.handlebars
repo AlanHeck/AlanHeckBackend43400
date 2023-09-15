@@ -1,13 +1,24 @@
 <div>
     <h1>Login</h1>
     <form id="loginForm">
-        <label>Email</label>
-        <input name="email" />
-        <br />
-        <label>Contraseña</label>
-        <input type="password" name="password" />
-        <input type="submit" />
+        <table>
+            <tr>
+                <td>Email</td>
+                <td><input name="email" /></td>
+            </tr>
+            <tr>
+                <td>Contraseña</td>
+                <td><input type="password" name="password" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Iniciar Sesión" /></td>
+            </tr>
+        </table>
     </form>
+    <button onclick="location.href='/api/sessions/github'">Inicia Sesión con
+        GitHub</button>
+
     <p>¿No estás registrado? <a href="/register">Regístrate aquí</a></p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -2,23 +2,35 @@
     <h1>Registro</h1>
     <form id="registerForm">
 
-        <label>Nombre</label>
-        <input name="first_name" />
-        <br />
-        <label>Apellido</label>
-        <input name="last_name" />
-        <br />
-        <label>Email</label>
-        <input name="email" />
-        <br />
-        <label>Edad</label>
-        <input name="age" />
-        <br />
-        <label>Contraseña</label>
-        <input type="password" name="password" />
+        <table>
+            <tr>
+                <td>Nombre</td>
+                <td><input name="first_name" /></td>
+            </tr>
+            <tr>
+                <td>Apellido</td>
+                <td><input name="last_name" /></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input name="email" /></td>
+            </tr>
+            <tr>
+                <td>Edad</td>
+                <td><input name="age" /></td>
+            </tr>
+            <tr>
+                <td>Contraseña</td>
+                <td><input type="password" name="password" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" /></td>
+            </tr>
+        </table>
 
-        <input type="submit" />
     </form>
     <p>¿Ya tienes una cuenta? <a href="/login">Ingresa aquí</a></p>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/register.js"></script>

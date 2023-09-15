@@ -1,70 +1,65 @@
 import { Router } from "express";
 import SessionManager from "../dao/dbManagers/sessions.js";
 import CartManager from "../dao/dbManagers/carts.js";
+import passport from "passport";
 
 const router = Router();
-const sessionManager = new SessionManager();
-const cartManager = new CartManager();
 
-router.post("/register", async (req, res) => {
-    try {
-        const { first_name, last_name, email, age, password, role } = req.body;
-
-        const isUserRegistered = await sessionManager.getUser({ email });
-        if (isUserRegistered) {
-            return res
-                .status(400)
-                .send({ status: "error", error: "User already exists" });
-        }
-
-        const cart = await cartManager.addCart({});
-
-        const user = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password,
-            role: role ?? "user",
-            cart: cart._id,
-        };
-
-        await sessionManager.register(user);
-
+router.post(
+    "/register",
+    passport.authenticate("register", {
+        failureRedirect: "/api/sessions/failRegister",
+    }),
+    async (req, res) => {
         return res.send({ status: "sucess", message: "user registered" });
-    } catch (error) {
-        console.log(error);
     }
+);
+
+router.get("/failRegister", (req, res) => {
+    console.log("Failed Register");
+    return res.send({ status: "error", error: "authentication error" });
 });
 
-router.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await sessionManager.getUser({ email, password });
-
-        if (!user) {
-            return res
-                .status(401)
-                .send({ status: "error", error: "Incorrect credentials" });
-        }
-
+router.post(
+    "/login",
+    passport.authenticate("login", {
+        failureRedirect: "/api/sessions/failLogin",
+    }),
+    async (req, res) => {
         req.session.user = {
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            age: user.age,
-            role: user.role,
-            cart: user.cart,
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
+            email: req.user.email,
         };
 
         return res.send({
             status: "sucess",
-            message: "Logged In",
+            message: "Login sucessful",
             payload: req.session.user,
         });
-    } catch (error) {
-        console.log(error);
     }
+);
+
+router.get("/failLogin", (req, res) => {
+    res.send({ status: "error", error: "failed login" });
 });
+
+router.get(
+    "/github",
+    passport.authenticate("github", { scope: ["user:email"] }),
+    async (req, res) => { }
+);
+
+router.get(
+    "/githubcallback",
+    passport.authenticate("github", { failureRedirect: "/login" }),
+    async (req, res) => {
+        req.session.user = req.user;
+        console.log(req.user);
+        res.redirect("/");
+    }
+);
 
 router.post("/logout", (req, res) => {
     req.session.destroy((err) => {

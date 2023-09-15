@@ -5,6 +5,8 @@ import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import database from "./db.js";
 import socket from "./socket.js";
+import passport from "passport";
+import initializePassport from "./auth/passport.js";
 import productsRouter from "./routes/product.router.js";
 import cartsRouter from "./routes/cart.router.js";
 import viewsRouter from "./routes/views.router.js";
@@ -36,6 +38,9 @@ app.use(
     secret: config.sessionSecret,
   })
 );
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Database connection
 database.connect();
