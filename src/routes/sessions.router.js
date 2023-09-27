@@ -1,13 +1,18 @@
 import { Router } from "express";
 import SessionManager from "../dao/dbManagers/sessions.js";
-import CartManager from "../dao/dbManagers/carts.js";
+import { isValidPassword } from "../utils.js";
+import config from "../config.js";
 import passport from "passport";
+import jwt from "jsonwebtoken";
 
 const router = Router();
+
+const sessionManager = new SessionManager();
 
 router.post(
     "/register",
     passport.authenticate("register", {
+        session: false,
         failureRedirect: "/api/sessions/failRegister",
     }),
     async (req, res) => {
@@ -20,29 +25,33 @@ router.get("/failRegister", (req, res) => {
     return res.send({ status: "error", error: "authentication error" });
 });
 
-router.post(
-    "/login",
-    passport.authenticate("login", {
-        failureRedirect: "/api/sessions/failLogin",
-    }),
-    async (req, res) => {
-        req.session.user = {
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            age: req.user.age,
-            email: req.user.email,
-        };
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
 
-        return res.send({
-            status: "sucess",
-            message: "Login sucessful",
-            payload: req.session.user,
-        });
-    }
-);
+    const user = await sessionManager.getUser({ email });
 
-router.get("/failLogin", (req, res) => {
-    res.send({ status: "error", error: "failed login" });
+    if (!user)
+        return res
+            .status(401)
+            .send({ status: "error", error: "Invalid Credentials" });
+
+    if (!isValidPassword(user, password))
+        return res
+            .status(401)
+            .send({ status: "error", error: "Invalid Credentials" });
+
+    const jwtUser = {
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        cart: user.cart,
+    };
+
+    const token = jwt.sign(jwtUser, config.jwtSecret, { expiresIn: "24h" });
+
+    return res.cookie("jwtCookie", token, { httpOnly: true }).send({
+        status: "sucess",
+        message: "Login sucessful",
+    });
 });
 
 router.get(
@@ -53,21 +62,27 @@ router.get(
 
 router.get(
     "/githubcallback",
-    passport.authenticate("github", { failureRedirect: "/login" }),
+    passport.authenticate("github", {
+        session: false,
+        failureRedirect: "/login",
+    }),
     async (req, res) => {
-        req.session.user = req.user;
-        console.log(req.user);
-        res.redirect("/");
+        const jwtUser = {
+            name: req.user.first_name,
+            email: req.user.email,
+            cart: req.user.cart,
+        };
+
+        const token = jwt.sign(jwtUser, config.jwtSecret, { expiresIn: "24h" });
+
+        res.cookie("jwtCookie", token, { httpOnly: true }).redirect("/");
     }
 );
 
 router.post("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (!err)
-            return res.send({ status: "sucess", message: "logout sucessful" });
-
-        return res.send({ status: "error", message: err });
-    });
+    return res
+        .clearCookie("jwtCookie")
+        .send({ status: "sucess", message: "log out sucessful" });
 });
 
 export default router;

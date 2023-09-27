@@ -1,14 +1,31 @@
 import passport from "passport";
 import local from "passport-local";
+import jwt from "passport-jwt";
 import GitHubStrategy from "passport-github2";
 import userModel from "../dao/models/users.js";
 import cartsModel from "../dao/models/carts.js";
 import { createHash, isValidPassword } from "../utils.js";
 import config from "../config.js";
 
-const { clientID, clientSecret, callbackUrl } = config;
+const { clientID, clientSecret, callbackUrl, jwtSecret } = config;
 
 const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy;
+const ExtractJwt = jwt.ExtractJwt;
+
+const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies["jwtCookie"];
+    }
+    return token;
+};
+
+const jwtOptions = {
+    secretOrKey: jwtSecret,
+    jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+};
+
 const initializePassport = () => {
     passport.use(
         "register",
@@ -47,22 +64,14 @@ const initializePassport = () => {
     );
 
     passport.use(
-        "login",
-        new LocalStrategy(
-            { usernameField: "email" },
-            async (username, password, done) => {
-                try {
-                    const user = await userModel.findOne({ email: username });
-                    if (!user) return done(null, false);
-
-                    if (!isValidPassword(user, password)) return done(null, false);
-
-                    return done(null, user);
-                } catch (error) {
-                    return done(error);
-                }
+        "jwt",
+        new JWTStrategy(jwtOptions, async (jwt_payload, done) => {
+            try {
+                return done(null, jwt_payload);
+            } catch (error) {
+                return done(error);
             }
-        )
+        })
     );
 
     passport.use(
@@ -77,12 +86,14 @@ const initializePassport = () => {
                 try {
                     let user = await userModel.findOne({ email: profile._json.email });
                     if (!user) {
+                        const cart = await cartsModel.create({});
                         let newUser = {
                             first_name: profile._json.name,
                             last_name: "",
                             age: 18,
                             email: profile._json.email,
                             password: "",
+                            cart: cart._id,
                         };
 
                         let result = await userModel.create(newUser);
