@@ -2,14 +2,14 @@ import express from "express";
 import handlebars from "express-handlebars";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import database from "./db.js";
+import database from "./mongo.js";
 import socket from "./socket.js";
 import passport from "passport";
-import initializePassport from "./auth/passport.js";
+import initializePassport from "./config/passport.js";
 import productsRouter from "./routes/product.router.js";
-import cartsRouter from "./routes/cart.router.js";
+import cartsRouter from "./routes/cart.router.js"
 import viewsRouter from "./routes/views.router.js";
-import sessionsRouter from "./routes/sessions.router.js";
+import usersRouter from "./routes/users.router.js";
 import __dirname from "./utils.js";
 
 // Initialization
@@ -35,7 +35,7 @@ database.connect();
 // Routes
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
-app.use("/api/sessions", sessionsRouter);
+app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 
 const httpServer = app.listen(8080, (req, res) => {

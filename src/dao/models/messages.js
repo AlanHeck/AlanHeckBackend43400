@@ -20,3 +20,4 @@ const messagesSchema = mongoose.Schema({
 const messagesModel = mongoose.model(messagesCollection, messagesSchema);
 
 export default messagesModel;
+

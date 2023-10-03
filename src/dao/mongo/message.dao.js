@@ -1,6 +1,6 @@
 import messagesModel from "../models/messages.js";
 
-export default class MessageManager {
+export default class Message {
     constructor() { }
 
     createMessage = async function (message) {

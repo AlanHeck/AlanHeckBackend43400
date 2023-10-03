@@ -1,6 +1,6 @@
 import cartsModel from "../models/carts.js";
 
-export default class CartManager {
+export default class Cart {
     constructor() { }
 
     getCarts = async () => {
@@ -33,24 +33,24 @@ export default class CartManager {
         }
     };
 
-    addProduct = async (cartId, productId, quantity) => {
+    cartHasProduct = async (cartId, productId) => {
         try {
-            const productExist = await cartsModel.findOne({
+            const cartHasProduct = await cartsModel.findOne({
+                _id: cartId,
                 products: { $elemMatch: { product: productId } },
             });
+            return cartHasProduct;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    };
 
-            if (!productExist) {
-                const updatedCart = await cartsModel.updateOne(
-                    { _id: cartId },
-                    { $push: { products: [{ product: productId, quantity }] } }
-                );
-                return updatedCart;
-            }
-
+    addProduct = async (cartId, productId, quantity) => {
+        try {
             const updatedCart = await cartsModel.updateOne(
                 { _id: cartId },
-                { $inc: { "products.$[elem].quantity": quantity } },
-                { arrayFilters: [{ "elem.product": productId }] }
+                { $push: { products: [{ product: productId, quantity }] } }
             );
             return updatedCart;
         } catch (error) {
@@ -99,7 +99,7 @@ export default class CartManager {
         try {
             const updatedCart = await cartsModel.updateOne(
                 { _id: cartId },
-                { $set: { "products.$[elem].quantity": quantity } },
+                { $inc: { "products.$[elem].quantity": quantity } },
                 { arrayFilters: [{ "elem.product": productId }] }
             );
             return updatedCart;

@@ -1,9 +1,9 @@
 import userModel from "../models/users.js";
 
-export default class SessionManager {
+export default class User {
     constructor() { }
 
-    getUser = async (filter) => {
+    getUserById = async (filter) => {
         try {
             const foundUser = await userModel.findOne(filter);
             return foundUser;
@@ -12,10 +12,10 @@ export default class SessionManager {
         }
     };
 
-    register = async (user) => {
+    createUser = async (user) => {
         try {
-            const registeredUser = await userModel.create(user);
-            return registeredUser;
+            const result = await userModel.create(user);
+            return result;
         } catch (error) {
             console.log(error);
         }

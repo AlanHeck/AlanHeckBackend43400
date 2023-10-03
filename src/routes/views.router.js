@@ -1,13 +1,8 @@
 import { Router } from "express";
 import passport from "passport";
-import ProductManager from "../dao/dbManagers/products.js";
-import MessageManager from "../dao/dbManagers/messages.js";
-import CartManager from "../dao/dbManagers/carts.js";
+import { productsService, cartsService } from "../services/index.js";
 
 const router = Router();
-const productManager = new ProductManager();
-const cartManager = new CartManager();
-const messageManager = new MessageManager();
 
 router.get(
     "/",
@@ -43,7 +38,7 @@ router.get(
             page,
             hasPrevPage,
             hasNextPage,
-        } = await productManager.getPaginatedProducts(options);
+        } = await productsService.getProducts(options);
 
         const link = "/?page=";
 
@@ -66,27 +61,26 @@ router.get(
 
 router.get("/product/:pid", async (req, res) => {
     const productId = req.params.pid;
-    const product = await productManager.getProductById(productId);
+    const product = await productsService.getProductById(productId);
     res.render("product", { title: "Product Details", product });
 });
 
-router.get("/cart", async (req, res) => {
-    const cart = await cartManager.getCartById("6440b66102acad1337350cc8");
-    res.render("cart", { products: cart.products, title: "Cart Items" });
-});
+router.get(
+    "/cart",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        const cart = await cartsService.getCartById(req.user.cart);
+        res.render("cart", { products: cart.products, title: "Cart Items" });
+    }
+);
 
 router.get("/realtimeproducts", async (req, res) => {
-    const products = await productManager.getProducts();
+    const products = await productsService.getProducts();
     res.render("realtime-products", {
         products,
         style: "styles.css",
         title: "Real Time Products",
     });
-});
-
-router.get("/chat", async (req, res) => {
-    const messages = await messageManager.getMessages();
-    return res.render("messages");
 });
 
 router.get("/login", (req, res) => {

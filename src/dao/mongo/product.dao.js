@@ -1,33 +1,26 @@
 import productsModel from "../models/products.js";
 
-export default class ProductManager {
+export default class Product {
     constructor() { }
 
-    getProducts = async () => {
-        try {
-            const products = await productsModel.find().lean();
-            return products;
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    getPaginatedProducts = async (options) => {
+    getProducts = async (options) => {
         try {
             const { query, pagination } = options;
             const paginatedProducts = await productsModel.paginate(query, pagination);
             return paginatedProducts;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 
     addProduct = async (product) => {
         try {
-            const createdProduct = await productsModel.create(product);
-            return createdProduct;
+            const result = await productsModel.create(product);
+            return result;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 
@@ -37,6 +30,7 @@ export default class ProductManager {
             return product;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 
@@ -49,6 +43,7 @@ export default class ProductManager {
             return updatedProduct;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 
@@ -58,6 +53,7 @@ export default class ProductManager {
             return deletedProduct;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 }

@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
-import config from "./config.js";
+import config from "./config/config.js";
 
-const { dbUrl } = config;
+const {
+    mongo: { url },
+} = config;
 
 const database = {
     connect: async () => {
         try {
-            await mongoose.connect(dbUrl);
+            await mongoose.connect(url);
         } catch (error) {
             console.log(error);
         }

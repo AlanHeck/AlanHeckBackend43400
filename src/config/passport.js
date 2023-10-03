@@ -5,9 +5,12 @@ import GitHubStrategy from "passport-github2";
 import userModel from "../dao/models/users.js";
 import cartsModel from "../dao/models/carts.js";
 import { createHash, isValidPassword } from "../utils.js";
-import config from "../config.js";
+import config from "./config.js";
 
-const { clientID, clientSecret, callbackUrl, jwtSecret } = config;
+const {
+    githubAuth: { clientID, clientSecret, callbackUrl },
+    jwt: { cookieName, secret },
+} = config;
 
 const LocalStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;
@@ -16,13 +19,13 @@ const ExtractJwt = jwt.ExtractJwt;
 const cookieExtractor = (req) => {
     let token = null;
     if (req && req.cookies) {
-        token = req.cookies["jwtCookie"];
+        token = req.cookies[cookieName];
     }
     return token;
 };
 
 const jwtOptions = {
-    secretOrKey: jwtSecret,
+    secretOrKey: secret,
     jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
 };
 

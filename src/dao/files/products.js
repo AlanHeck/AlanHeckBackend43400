@@ -1,4 +1,4 @@
-import fs from "fs";
+mport fs from "fs";
 import __dirname from "../../utils.js";
 import socket from "../../socket.js";
 
