@@ -6,8 +6,8 @@ import database from "./mongo.js";
 import socket from "./socket.js";
 import passport from "passport";
 import initializePassport from "./config/passport.js";
-import productsRouter from "./routes/product.router.js";
-import cartsRouter from "./routes/cart.router.js"
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
 import __dirname from "./utils.js";

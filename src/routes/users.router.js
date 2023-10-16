@@ -7,7 +7,7 @@ import {
     login,
     logout,
     register,
-} from "../controllers/user.controller.js";
+} from "../controllers/users.controller.js";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.post(
     "/register",
     passport.authenticate("register", {
         session: false,
-        failureRedirect: "/api/sessions/failRegister",
+        failureRedirect: "/api/users/failRegister",
     }),
     register
 );

@@ -94,4 +94,14 @@ export default class CartsRepository {
             return null;
         }
     };
+
+    createPurchase = async (ticket) => {
+        try {
+            const result = await cartDao.createPurchase(ticket);
+            return result;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    };
 }

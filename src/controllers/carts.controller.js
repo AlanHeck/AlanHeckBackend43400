@@ -145,3 +145,14 @@ export const updateProductQuantity = async (req, res) => {
         console.log(error);
     }
 };
+
+export const createPurchase = async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const currentUser = req.user.email;
+        const result = await cartsService.createPurchase(cartId, currentUser);
+        return res.send({ status: "success", result });
+    } catch (error) {
+        console.log(error);
+    }
+};

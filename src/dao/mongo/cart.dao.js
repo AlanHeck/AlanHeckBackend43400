@@ -1,4 +1,5 @@
 import cartsModel from "../models/carts.js";
+import ticketsModel from "../models/tickets.js";
 
 export default class Cart {
     constructor() { }
@@ -105,6 +106,16 @@ export default class Cart {
             return updatedCart;
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    createPurchase = async (ticket) => {
+        try {
+            const result = await ticketsModel.create(ticket);
+            return result;
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     };
 }

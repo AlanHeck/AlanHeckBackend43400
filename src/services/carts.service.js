@@ -1,4 +1,6 @@
 import { cartsRepository } from "../repositories/index.js";
+import { faker } from "@faker-js/faker";
+import { productsService } from "./index.js";
 
 export default class CartsService {
     getCarts = async () => {
@@ -94,6 +96,37 @@ export default class CartsService {
                 productId,
                 quantity
             );
+            return result;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    };
+
+    createPurchase = async (cartId, currentUser) => {
+        try {
+            const cart = await cartsRepository.getCartById(cartId);
+
+            const { products } = cart;
+
+            products.forEach(async (order) => {
+                order.product.stock -= order.quantity;
+                await productsService.updateProduct(order.product._id, order.product);
+            });
+
+            const ammount = products
+                .filter((order) => order.product.stock > 0)
+                .flatMap((order) => order.product.price * order.quantity)
+                .reduce((sum, cur) => (sum += cur), 0);
+
+            const ticket = {
+                code: faker.string.alphanumeric({ casing: "upper", length: 7 }),
+                ammount,
+                purchaser: currentUser,
+            };
+
+            const result = await cartsRepository.createPurchase(ticket);
+
             return result;
         } catch (error) {
             console.log(error);
