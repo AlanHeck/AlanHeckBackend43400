@@ -10,7 +10,9 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
+import mockingRouter from "./routes/mockingproducts.router.js"
 import __dirname from "./utils.js";
+import { errorMiddleware } from "./middlewares/error.middleware.js";
 
 // Initialization
 const app = express();
@@ -37,6 +39,11 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
+app.use("/mockingproducts", mockingRouter);
+
+//Error Middleware
+app.use(errorMiddleware)
+
 
 const httpServer = app.listen(8080, (req, res) => {
   console.log("Listening on port 8080");

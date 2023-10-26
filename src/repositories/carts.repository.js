@@ -6,8 +6,7 @@ export default class CartsRepository {
             const carts = await cartDao.getCarts();
             return carts;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -16,8 +15,7 @@ export default class CartsRepository {
             const cart = await cartDao.getCartById(id);
             return cart;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -26,8 +24,7 @@ export default class CartsRepository {
             const result = await cartDao.addCart(cart);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -36,8 +33,7 @@ export default class CartsRepository {
             const result = await cartDao.cartHasProduct(cartId, productId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -46,8 +42,7 @@ export default class CartsRepository {
             const result = await cartDao.addProduct(cartId, productId, quantity);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -56,8 +51,7 @@ export default class CartsRepository {
             const result = await cartDao.addProducts(cartId, productId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -66,8 +60,7 @@ export default class CartsRepository {
             const result = await cartDao.deleteProduct(cartId, productId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -76,8 +69,7 @@ export default class CartsRepository {
             const result = await cartDao.deleteAllProducts(cartId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -90,8 +82,7 @@ export default class CartsRepository {
             );
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -100,8 +91,7 @@ export default class CartsRepository {
             const result = await cartDao.createPurchase(ticket);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 }

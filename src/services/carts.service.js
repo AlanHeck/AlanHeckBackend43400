@@ -8,8 +8,7 @@ export default class CartsService {
             const carts = await cartsRepository.getCarts();
             return carts;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -18,8 +17,7 @@ export default class CartsService {
             const cart = await cartsRepository.getCartById(id);
             return cart;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -28,8 +26,7 @@ export default class CartsService {
             const result = await cartsRepository.addCart(cart);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -54,8 +51,7 @@ export default class CartsService {
             result = await cartsRepository.addProduct(cartId, productId, quantity);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -64,8 +60,7 @@ export default class CartsService {
             const result = await cartsRepository.addProducts(cartId, productId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -74,8 +69,7 @@ export default class CartsService {
             const result = await cartsRepository.deleteProduct(cartId, productId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -84,8 +78,7 @@ export default class CartsService {
             const result = await cartsRepository.deleteAllProducts(cartId);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -98,8 +91,7 @@ export default class CartsService {
             );
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 
@@ -129,8 +121,7 @@ export default class CartsService {
 
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw error
         }
     };
 }

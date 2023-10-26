@@ -1,0 +1,27 @@
+<hi>Welcome {{user.first_name}} ID: {{user._id}}</hi>
+<div>
+    {{#each products}}
+    <div class="gallery" id="product">
+        <a href="/mocking/{{this.id}}">
+            <h2>{{this.title}}</h2>
+            <p>{{this.description}}</p>
+            <p>{{this.price}}</p>
+        </a>
+        <button class="add-to-cart" data-product-id="{{this.id}}" data-price="{{this.price}}"
+            data-uid="{{user._id}}">Ad to Cart</button>
+    </div>
+    {{/each}}
+</div>
+
+
+<p>Page {{page}} of {{totalPages}}</p>
+
+
+{{#if prevPage}}
+<a href="/mockingproducts?page={{prevPage}}&limit=10">Previous</a>
+{{/if}}
+
+{{#if nextPage}}
+<a href="/mockingproducts?page={{nextPage}}&limit=10">Next</a>
+{{/if}}
+

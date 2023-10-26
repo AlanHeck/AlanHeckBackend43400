@@ -1,15 +1,15 @@
 import { cartsService } from "../services/index.js";
 
-export const getCarts = async (req, res) => {
+export const getCarts = async (req, res, next) => {
     try {
         const carts = await cartsService.getCarts();
         return res.send({ status: "success", payload: carts });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const getCartById = async (req, res) => {
+export const getCartById = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const cart = await cartsService.getCartById(cartId);
@@ -22,11 +22,11 @@ export const getCartById = async (req, res) => {
         }
         return res.send({ status: "OK", message: "Cart found", payload: cart });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const addCart = async (req, res) => {
+export const addCart = async (req, res, next) => {
     try {
         const cart = req.body;
         if (!cart) {
@@ -42,11 +42,11 @@ export const addCart = async (req, res) => {
             payload: newCart,
         });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const addProduct = async (req, res) => {
+export const addProduct = async (req, res,next) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
@@ -70,11 +70,11 @@ export const addProduct = async (req, res) => {
             payload: newProduct,
         });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const addProducts = async (req, res) => {
+export const addProducts = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const products = req.body;
@@ -85,11 +85,11 @@ export const addProducts = async (req, res) => {
 
         return res.send({ status: "sucess", message: "cart updated" });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
@@ -103,11 +103,11 @@ export const deleteProduct = async (req, res) => {
 
         return res.send({ status: "sucess", message: "product deleted from cart" });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const deleteProducts = async (req, res) => {
+export const deleteProducts = async (req, res,next) => {
     try {
         const cartId = req.params.cid;
 
@@ -121,11 +121,11 @@ export const deleteProducts = async (req, res) => {
             message: "deleted all products from cart",
         });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const updateProductQuantity = async (req, res) => {
+export const updateProductQuantity = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
@@ -142,17 +142,17 @@ export const updateProductQuantity = async (req, res) => {
 
         return res.send({ status: "sucess", message: "cart updated" });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const createPurchase = async (req, res) => {
+export const createPurchase = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const currentUser = req.user.email;
         const result = await cartsService.createPurchase(cartId, currentUser);
         return res.send({ status: "success", result });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };

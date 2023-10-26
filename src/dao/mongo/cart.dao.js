@@ -1,3 +1,4 @@
+import { DatabaseAccessError } from "../../errors/DataBaseAccessError.js";
 import cartsModel from "../models/carts.js";
 import ticketsModel from "../models/tickets.js";
 
@@ -9,7 +10,7 @@ export default class Cart {
             const carts = await cartsModel.find();
             return carts;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "read", error)
         }
     };
 
@@ -21,7 +22,7 @@ export default class Cart {
                 .lean();
             return cart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "read", error)
         }
     };
 
@@ -30,7 +31,7 @@ export default class Cart {
             const createdCart = cartsModel.create(cart);
             return createdCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "create", error)
         }
     };
 
@@ -42,8 +43,7 @@ export default class Cart {
             });
             return cartHasProduct;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("cartsModel", "read", error)
         }
     };
 
@@ -55,7 +55,7 @@ export default class Cart {
             );
             return updatedCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "update", error)
         }
     };
 
@@ -67,7 +67,7 @@ export default class Cart {
             );
             return updatedCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "update", error)
         }
     };
 
@@ -79,7 +79,7 @@ export default class Cart {
             );
             return updatedCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "delete", error)
         }
     };
 
@@ -92,7 +92,7 @@ export default class Cart {
             );
             return updatedCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "delete", error)
         }
     };
 
@@ -105,7 +105,7 @@ export default class Cart {
             );
             return updatedCart;
         } catch (error) {
-            console.log(error);
+            throw new DatabaseAccessError("cartsModel", "update", error)
         }
     };
 
@@ -114,8 +114,7 @@ export default class Cart {
             const result = await ticketsModel.create(ticket);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("ticketsModel", "create", error)
         }
     };
 }

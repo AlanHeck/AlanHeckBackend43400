@@ -36,8 +36,7 @@ export default class ProductsService {
             const result = await productsRepository.updateProduct(id, changes);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+throw error
         }
     };
 

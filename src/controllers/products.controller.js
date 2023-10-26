@@ -1,3 +1,4 @@
+import { DatabaseAccessError } from "../errors/DataBaseAccessError.js";
 import { productsService } from "../services/index.js";
 
 export const getProducts = async (req, res) => {
@@ -95,20 +96,24 @@ export const updateProduct = async (req, res) => {
     const productId = req.params.pid;
     const changes = req.body;
 
-    const updatedProduct = await productsService.updateProduct(
-        productId,
-        changes
-    );
+    try {
+        await productsService.updateProduct(
+            productId,
+            changes
+        );
+        return res.send({
+            status: "OK",
+            message: "Product succesfully updated",
+        });
 
-    if (!updatedProduct) {
-        return res
-            .status(404)
-            .send({ status: "Error", error: "product was not found" });
+    } catch (error) {
+        if (error instanceof DatabaseAccessError) {
+            res.status(500).send(error.message);
+
+        }
+
     }
-    return res.send({
-        status: "OK",
-        message: "Product succesfully updated",
-    });
+
 };
 
 export const deleteProduct = async (req, res) => {

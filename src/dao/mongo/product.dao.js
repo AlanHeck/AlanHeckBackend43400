@@ -1,4 +1,6 @@
+import { DatabaseAccessError } from "../../errors/DataBaseAccessError.js";
 import productsModel from "../models/products.js";
+import mongoose from "mongoose";
 
 export default class Product {
     constructor() { }
@@ -42,9 +44,9 @@ export default class Product {
             );
             return updatedProduct;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("productsModel", "update", error);
         }
+
     };
 
     deleteProduct = async (id) => {
