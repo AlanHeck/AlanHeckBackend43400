@@ -1,4 +1,5 @@
 import { cartsService } from "../services/index.js";
+import logger from '../winston.js';
 
 export const getCarts = async (req, res, next) => {
     try {
@@ -22,6 +23,11 @@ export const getCartById = async (req, res, next) => {
         }
         return res.send({ status: "OK", message: "Cart found", payload: cart });
     } catch (error) {
+        logger.error({
+            message: 'Error getting user cart',
+            userId: req.user._id,
+            error: error.message,
+        });
         next(error);
     }
 };
@@ -42,11 +48,13 @@ export const addCart = async (req, res, next) => {
             payload: newCart,
         });
     } catch (error) {
+        logger.error(`Error creating cart: ${error.message}`);
+        res.status(500).json({ message: "Error creating cart" });
         next(error);
     }
 };
 
-export const addProduct = async (req, res,next) => {
+export const addProduct = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
@@ -60,9 +68,12 @@ export const addProduct = async (req, res,next) => {
         );
 
         if (!newProduct) {
+            logger.warn(`Product not found: ${productId}`);
             return res
                 .status(404)
                 .send({ status: "Error", error: "Product could not be found" });
+
+
         }
         return res.send({
             status: "OK",
@@ -84,7 +95,9 @@ export const addProducts = async (req, res, next) => {
             return res.status(400).send({ status: "error", error: "error" });
 
         return res.send({ status: "sucess", message: "cart updated" });
-    } catch (error) {
+    } catch (error) {        
+            logger.error(`Error adding products : ${error.message}`);
+            res.status(500).json({ status: "error", message: error.message });
         next(error);
     }
 };
@@ -103,11 +116,13 @@ export const deleteProduct = async (req, res, next) => {
 
         return res.send({ status: "sucess", message: "product deleted from cart" });
     } catch (error) {
+        logger.error(`Error when removing product from cart: ${error.message}`);
+        res.status(500).json({ status: 'error', message: error.message });
         next(error);
     }
 };
 
-export const deleteProducts = async (req, res,next) => {
+export const deleteProducts = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
 
@@ -121,6 +136,11 @@ export const deleteProducts = async (req, res,next) => {
             message: "deleted all products from cart",
         });
     } catch (error) {
+        logger.error(`error when deleting products: ${error.message}`);
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
         next(error);
     }
 };

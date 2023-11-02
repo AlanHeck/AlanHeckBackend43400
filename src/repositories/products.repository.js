@@ -36,7 +36,7 @@ export default class ProductsRepository {
             const result = await productDao.updateProduct(id, changes);
             return result;
         } catch (error) {
-           throw error
+            throw error;
         }
     };
 

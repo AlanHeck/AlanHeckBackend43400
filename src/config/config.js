@@ -1,6 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+const environment = "DEVELOPMENT";
+
+dotenv.config({
+    path: environment === "PRODUCTION" ? "./.env.production" : "./.env.development",
+});
+
+
 export default {
     mongo: {
         url: process.env.DB_URL,
