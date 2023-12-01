@@ -1,4 +1,4 @@
-import { DatabaseAccessError } from "../errors/DataBaseAccessError.js";
+import { DatabaseAccessError } from "../errors/DatabaseAccessError.js";
 import { productsService } from "../services/index.js";
 
 export const getProducts = async (req, res) => {

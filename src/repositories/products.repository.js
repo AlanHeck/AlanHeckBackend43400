@@ -1,3 +1,4 @@
+import { DatabaseAccessError } from "../errors/DatabaseAccessError.js";
 import { productDao } from "../dao/mongo/index.js";
 
 export default class ProductsRepository {
@@ -6,8 +7,7 @@ export default class ProductsRepository {
             const products = await productDao.getProducts(options);
             return products;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("products", "getProducts", "Unable to fetch products", error);
         }
     };
 
@@ -16,8 +16,7 @@ export default class ProductsRepository {
             const product = await productDao.getProductById(id);
             return product;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("products", "getProductById", `Unable to fetch product with ID ${id}`, error);
         }
     };
 
@@ -26,8 +25,7 @@ export default class ProductsRepository {
             const result = await productDao.addProduct(product);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("products", "addProduct", "Unable to add product", error);
         }
     };
 
@@ -36,7 +34,7 @@ export default class ProductsRepository {
             const result = await productDao.updateProduct(id, changes);
             return result;
         } catch (error) {
-            throw error;
+            throw new DatabaseAccessError("products", "updateProduct", `Unable to update product with ID ${id}`, error);
         }
     };
 
@@ -45,8 +43,7 @@ export default class ProductsRepository {
             const result = await productDao.deleteProduct(id);
             return result;
         } catch (error) {
-            console.log(error);
-            return null;
+            throw new DatabaseAccessError("products", "deleteProduct", `Unable to delete product with ID ${id}`, error);
         }
     };
 }

@@ -1,3 +1,4 @@
+import { DatabaseAccessError } from "../errors/DatabaseAccessError.js";
 import { userDao } from "../dao/mongo/index.js";
 
 export default class UsersRepository {
@@ -6,18 +7,16 @@ export default class UsersRepository {
             const user = await userDao.getUserById(id);
             return user;
         } catch (error) {
-            console.log();
-            return null;
+            throw new DatabaseAccessError("users", "getUserById", `Unable to fetch user with ID ${id}`, error);
         }
     };
 
     createUser = async (user) => {
         try {
-            const user = await userDao.createUser(user);
-            return user;
+            const newUser = await userDao.createUser(user);
+            return newUser;
         } catch (error) {
-            console.log();
-            return null;
+            throw new DatabaseAccessError("users", "createUser", "Unable to create user", error);
         }
     };
 }

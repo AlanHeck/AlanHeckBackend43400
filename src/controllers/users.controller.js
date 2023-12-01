@@ -2,43 +2,45 @@ import { usersService } from "../services/index.js";
 import { isValidPassword } from "../utils.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
+import CustomError from "../errors/CustomErrors.js";
+import { AuthenticationError } from "../errors/DatabaseAccessError.js";
 
 const {
     jwt: { cookieName, secret },
 } = config;
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     try {
-        return res.send({ status: "sucess", message: "user registered" });
+        return res.send({ status: "success", message: "User registered" });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const failRegister = async (req, res) => {
+export const failRegister = async (req, res, next) => {
     try {
-        console.log("Failed Register");
-        return res.send({ status: "error", error: "authentication error" });
+        throw new CustomError({
+            name: "FailedRegisterError",
+            message: "Authentication error",
+        });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
         const user = await usersService.getUserById({ email });
 
-        if (!user)
-            return res
-                .status(401)
-                .send({ status: "error", error: "Invalid Credentials" });
+        if (!user) {
+            throw new AuthenticationError("Invalid credentials");
+        }
 
-        if (!isValidPassword(user, password))
-            return res
-                .status(401)
-                .send({ status: "error", error: "Invalid Credentials" });
+        if (!isValidPassword(user, password)) {
+            throw new AuthenticationError("Invalid credentials");
+        }
 
         const jwtUser = {
             name: `${user.first_name} ${user.last_name}`,
@@ -49,15 +51,15 @@ export const login = async (req, res) => {
         const token = jwt.sign(jwtUser, secret, { expiresIn: "24h" });
 
         return res.cookie(cookieName, token, { httpOnly: true }).send({
-            status: "sucess",
-            message: "Login sucessful",
+            status: "success",
+            message: "Login successful",
         });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const gitHubLogin = async (req, res) => {
+export const gitHubLogin = async (req, res, next) => {
     try {
         const jwtUser = {
             name: req.user.first_name,
@@ -69,16 +71,16 @@ export const gitHubLogin = async (req, res) => {
 
         return res.cookie(cookieName, token, { httpOnly: true }).redirect("/");
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
     try {
         return res
             .clearCookie(cookieName)
-            .send({ status: "sucess", message: "log out sucessful" });
+            .send({ status: "success", message: "Logout successful" });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
