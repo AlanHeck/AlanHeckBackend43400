@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import passport from "passport";
 import {
     failRegister,
@@ -7,6 +6,7 @@ import {
     login,
     logout,
     register,
+    changeUserRole,
 } from "../controllers/users.controller.js";
 
 const router = Router();
@@ -41,4 +41,10 @@ router.get(
 
 router.post("/logout", logout);
 
+
+router.patch(
+    "/premium/:uid",
+    passport.authenticate("jwt", { session: false }),
+    changeUserRole
+);
 export default router;

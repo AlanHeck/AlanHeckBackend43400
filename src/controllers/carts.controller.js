@@ -58,29 +58,24 @@ export const addProduct = async (req, res, next) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
-
         const { quantity } = req.body;
 
-        const newProduct = await cartsService.addProduct(
-            cartId,
-            productId,
-            quantity
-        );
-
-        if (!newProduct) {
-            logger.warn(`Product not found: ${productId}`);
-            return res
-                .status(404)
-                .send({ status: "Error", error: "Product could not be found" });
-
-
+        const productOwner = await productsService.getProductOwner(productId);
+        if (req.user.role === "premium" && productOwner === req.user.email) {
+            return res.status(403).send({
+                status: "Error",
+                error: "Permission denied. Premium users cannot add their own products to the cart.",
+            });
         }
+        const newProduct = await cartsService.addProduct(cartId, productId, quantity);
         return res.send({
             status: "OK",
             message: "Product successfully added to the cart",
             payload: newProduct,
         });
     } catch (error) {
+        logger.error(`Error adding product to the cart: ${error.message}`);
+        res.status(500).json({ status: "Error", message: "Internal Server Error" });
         next(error);
     }
 };
@@ -90,14 +85,25 @@ export const addProducts = async (req, res, next) => {
         const cartId = req.params.cid;
         const products = req.body;
 
-        const updatedCart = await cartsService.addProducts(cartId, products);
-        if (!updatedCart)
-            return res.status(400).send({ status: "error", error: "error" });
+        const productOwners = await productsService.getProductsOwners(products);
 
-        return res.send({ status: "sucess", message: "cart updated" });
-    } catch (error) {        
-            logger.error(`Error adding products : ${error.message}`);
-            res.status(500).json({ status: "error", message: error.message });
+        if (req.user.role === "premium" && productOwners.includes(req.user.email)) {
+            return res.status(403).send({
+                status: "Error",
+                error: "Permission denied. Premium users cannot add their own products to the cart.",
+            });
+        }
+
+        const updatedCart = await cartsService.addProducts(cartId, products);
+
+        return res.send({
+            status: "OK",
+            message: "Products successfully added to the cart",
+            payload: updatedCart,
+        });
+    } catch (error) {
+        logger.error(`Error adding products to the cart: ${error.message}`);
+        res.status(500).json({ status: "Error", message: "Internal Server Error" });
         next(error);
     }
 };

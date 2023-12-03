@@ -1,0 +1,246 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene la lista de productos
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Filtrar por categoría
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: Filtrar por estado
+        - in: query
+          name: sort
+          schema:
+            type: string
+          description: Ordenar por precio (asc/desc)
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Número de página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Número de elementos por página
+      responses:
+        "200":
+          description: Lista de productos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  totalPages:
+                    type: integer
+                    description: Total de páginas disponibles
+                  prevPage:
+                    type: integer
+                    description: Número de página anterior
+                  nextPage:
+                    type: integer
+                    description: Número de página siguiente
+                  page:
+                    type: integer
+                    description: Número de la página actual
+                  hasPrevPage:
+                    type: boolean
+                    description: Indica si hay una página anterior
+                  hasNextPage:
+                    type: boolean
+                    description: Indica si hay una página siguiente
+                  prevLink:
+                    type: string
+                    description: Enlace a la página anterior
+                  nextLink:
+                    type: string
+                    description: Enlace a la página siguiente
+
+    post:
+      summary: Agrega un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        description: Objeto del producto que se va a agregar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "200":
+          description: Producto agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un producto por su ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID del producto
+      responses:
+        "200":
+          description: Producto encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  error:
+                    type: string
+                    description: Mensaje de error
+
+    put:
+      summary: Actualiza un producto existente
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID del producto a actualizar
+      requestBody:
+        description: Campos a actualizar en el producto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "200":
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  error:
+                    type: string
+                    description: Mensaje de error
+
+    delete:
+      summary: Elimina un producto existente
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID del producto a eliminar
+      responses:
+        "200":
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+        "404":
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  error:
+                    type: string
+                    description: Mensaje de error
+
+components:
+  schemas:
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del producto
+        price:
+          type: number
+          description: Precio del producto
+        description:
+          type: string
+          description: Descripción del producto
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado del producto
+        name:
+          type: string
+          description: Nombre del producto
+        price:
+          type: number
+          description: Precio del producto
+        description:
+          type: string
+          description: Descripción del producto

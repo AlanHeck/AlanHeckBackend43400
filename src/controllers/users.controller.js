@@ -84,3 +84,27 @@ export const logout = async (req, res, next) => {
         next(error);
     }
 };
+
+export const changeUserRole = async (req, res, next) => {
+    try {
+        const userId = req.params.uid;
+        const { role } = req.body;
+
+        if (!["user", "premium"].includes(role)) {
+            return res.status(400).send({
+                status: "Error",
+                error: "Invalid role. Allowed roles are 'user' and 'premium'.",
+            });
+        }
+
+        const updatedUser = await usersService.changeUserRole(userId, role);
+
+        return res.send({
+            status: "OK",
+            message: "User role successfully updated",
+            payload: updatedUser,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

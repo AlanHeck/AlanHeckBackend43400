@@ -97,15 +97,19 @@ export const updateProduct = async (req, res) => {
     const changes = req.body;
 
     try {
-        await productsService.updateProduct(
-            productId,
-            changes
-        );
-        return res.send({
-            status: "OK",
-            message: "Product succesfully updated",
-        });
-
+        if (req.user.role === "premium" || req.user.role === "admin") {
+            const updatedProduct = await productsService.updateProduct(productId, changes);
+            return res.send({
+                status: "OK",
+                message: "Product successfully updated",
+                payload: updatedProduct,
+            });
+        } else {
+            return res.status(403).send({
+                status: "Error",
+                error: "Permission denied. Only premium users and admin can update products.",
+            });
+        }
     } catch (error) {
         if (error instanceof DatabaseAccessError) {
             res.status(500).send(error.message);
@@ -118,12 +122,20 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     const productId = req.params.pid;
-    const deletedProduct = await productsService.deleteProduct(productId);
-
-    if (!deletedProduct) {
-        return res
-            .status(404)
-            .send({ status: "Error", error: "Product does not exist" });
+    try {
+        if (req.user.role === "premium" || req.user.role === "admin") {
+            const deletedProduct = await productsService.deleteProduct(productId);
+            return res.send({
+                status: "OK",
+                message: "Product deleted successfully",
+                payload: deletedProduct,
+            });
+        } else {
+            return res.status(403).send({
+                status: "Error",
+                error: "Permission denied. Only premium users and admin can delete products.",
+            });
+        }
+    } catch (error) {
     }
-    return res.send({ status: "OK", message: "Product deleted successfully" });
 };

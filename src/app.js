@@ -11,8 +11,11 @@ import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
 import mockingRouter from "./routes/mockingproducts.router.js"
+import passwordResetRouter from "./routes/passwordReset.router.js";
 import __dirname from "./utils.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
+import swaggerUi from "swagger-ui-express"
+import specs from "./swagger.js"
 
 // Initialization
 const app = express();
@@ -40,6 +43,8 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 app.use("/mockingproducts", mockingRouter);
+app.use("/password-reset", passwordResetRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 //Error Middleware
 app.use(errorMiddleware)
@@ -50,3 +55,5 @@ const httpServer = app.listen(8080, (req, res) => {
 });
 
 socket.connect(httpServer);
+
+export default app;

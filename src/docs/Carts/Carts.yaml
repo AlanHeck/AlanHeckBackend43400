@@ -1,0 +1,93 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtiene la lista de carritos
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Lista de carritos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Cart"
+                    
+    post:
+      summary: Agrega un nuevo carrito
+      tags:
+        - Carts
+      requestBody:
+        description: Objeto del carrito que se va a agregar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartInput"
+      responses:
+        "200":
+          description: Carrito agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                  message:
+                    type: string
+                    description: Mensaje de éxito
+                  payload:
+                    $ref: "#/components/schemas/Cart"
+
+/components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado del carrito
+        userId:
+          type: string
+          description: ID del usuario al que pertenece el carrito
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                description: ID del producto en el carrito
+              quantity:
+                type: integer
+                description: Cantidad de productos
+        total:
+          type: number
+          description: Precio total del carrito
+      example:
+        _id: "abc123"
+        userId: "user123"
+        items:
+          - productId: "xyz456"
+            quantity: 2
+          - productId: "def789"
+            quantity: 1
+        total: 59.99
+
+    CartInput:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ID del usuario al que pertenece el carrito
+      example:
+        userId: "user123"
